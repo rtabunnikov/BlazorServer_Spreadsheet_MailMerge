@@ -14,10 +14,4 @@
     <PackageReference Include="DevExpress.Document.Processor" Version="20.1.6" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Content Update="wwwroot\js\download.js">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
 </Project>

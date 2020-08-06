@@ -43,6 +43,7 @@ namespace BlazorServer_Spreadsheet_MailMerge {
             app.UseRouting();
 
             app.UseEndpoints(endpoints => {
+                endpoints.MapControllers();
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });

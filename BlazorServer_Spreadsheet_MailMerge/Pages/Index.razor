@@ -1,7 +1,4 @@
 ﻿@page "/"
-@using System.IO
-@using DevExpress.Spreadsheet
-@inject IJSRuntime JS
 @inject DocumentService DocumentService
 
 <div class="container">
@@ -30,7 +27,10 @@
 
             <DxFormLayoutItem ColSpanMd="2">
                 <Template>
-                    <DxButton Click="ExportToXlsx" CssClass="btn-block" Text="Export to XLSX" />
+                    <a class="btn btn-sm dx-btn btn-primary btn-block"
+                       href="api/Export/Xlsx?loanAmount=@loanAmount&periodInYears=@periodInYears&interestRate=@interestRate&startDateOfLoan=@startDateOfLoan">
+                        Export to XLSX
+                    </a>
                 </Template>
             </DxFormLayoutItem>
 
@@ -47,7 +47,10 @@
             </DxFormLayoutItem>
             <DxFormLayoutItem ColSpanMd="2">
                 <Template>
-                    <DxButton Click="ExportToPdf" CssClass="btn-block" Text="Export to PDF" />
+                    <a class="btn btn-sm dx-btn btn-primary btn-block"
+                       href="api/Export/Pdf?loanAmount=@loanAmount&periodInYears=@periodInYears&interestRate=@interestRate&startDateOfLoan=@startDateOfLoan">
+                        Export to PDF
+                    </a>
                 </Template>
             </DxFormLayoutItem>
 
@@ -61,53 +64,42 @@
 </div>
 
 @code{
-    Workbook workbook;
     double loanAmount = 19000;
     int periodInYears = 2;
     double interestRate = 0.055d;
     DateTime startDateOfLoan = DateTime.Now;
     string content;
 
-    double LoanAmount { get => loanAmount; set { loanAmount = value; UpdateValue(); } }
-    int PeriodInDays { get => periodInYears; set { periodInYears = value; UpdateValue(); } }
-    double InterestRate { get => interestRate; set { interestRate = value; UpdateValue(); } }
-    DateTime StartDateOfLoan { get => startDateOfLoan; set { startDateOfLoan = value; UpdateValue(); } }
-
-    protected override Task OnInitializedAsync() {
-        workbook = new Workbook();
-        UpdatePreview();
-        return base.OnInitializedAsync();
+    double LoanAmount {
+        get => loanAmount;
+        set { loanAmount = value; UpdateValue(); }
+    }
+    int PeriodInDays {
+        get => periodInYears;
+        set { periodInYears = value; UpdateValue(); }
+    }
+    double InterestRate {
+        get => interestRate;
+        set { interestRate = value; UpdateValue(); }
+    }
+    DateTime StartDateOfLoan {
+        get => startDateOfLoan;
+        set { startDateOfLoan = value; UpdateValue(); }
     }
 
-    void ExportToXlsx(MouseEventArgs mouseEventArgs) {
-        GenerateDocument();
-        var bytes = workbook.SaveDocument(DocumentFormat.Xlsx);
-        JS.InvokeVoidAsync("download", "output.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", Convert.ToBase64String(bytes));
-    }
-
-    void ExportToPdf(MouseEventArgs mouseEventArgs) {
-        GenerateDocument();
-        using var ms = new MemoryStream();
-        workbook.ExportToPdf(ms);
-        JS.InvokeVoidAsync("download", "output.pdf", "application/pdf", Convert.ToBase64String(ms.ToArray()));
+    protected override async Task OnInitializedAsync() {
+        await UpdatePreview();
+        await base.OnInitializedAsync();
     }
 
     void UpdateValue() =>
-        InvokeAsync(() => {
-            UpdatePreview();
+        InvokeAsync(async () => {
+            await UpdatePreview();
             StateHasChanged();
         });
 
-    void GenerateDocument() {
-        workbook.LoadDocument("Data/LoanAmortizationSchedule_template.xltx");
-        new LoanAmortizationScheduleDocumentGenerator(workbook)
-            .GenerateDocument(loanAmount, periodInYears, interestRate, startDateOfLoan);
-    }
-
-    void UpdatePreview() {
-        GenerateDocument();
-        using var ms = new MemoryStream();
-        workbook.ExportToHtml(ms, workbook.Worksheets[0]);
-        content = "data:text/html;base64," + Convert.ToBase64String(ms.ToArray());
+    async Task UpdatePreview() {
+        var document = await DocumentService.GetHtmlDocumentAsync(loanAmount, periodInYears, interestRate, startDateOfLoan);
+        content = "data:text/html;base64," + Convert.ToBase64String(document);
     }
 }
