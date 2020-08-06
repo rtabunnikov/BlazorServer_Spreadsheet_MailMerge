@@ -12,14 +12,14 @@ namespace BlazorServer_Spreadsheet_MailMerge.Code {
 
         public async Task<byte[]> GetPdfDocumentAsync(double loanAmount, int periodInYears, double interestRate, DateTime startDateOfLoan) {
             using var workbook = await GenerateDocumentAsync(loanAmount, periodInYears, interestRate, startDateOfLoan);
-            var ms = new MemoryStream();
+            using var ms = new MemoryStream();
             await workbook.ExportToPdfAsync(ms);
             return ms.ToArray();
         }
 
         public async Task<byte[]> GetHtmlDocumentAsync(double loanAmount, int periodInYears, double interestRate, DateTime startDateOfLoan) {
             using var workbook = await GenerateDocumentAsync(loanAmount, periodInYears, interestRate, startDateOfLoan);
-            var ms = new MemoryStream();
+            using var ms = new MemoryStream();
             await workbook.ExportToHtmlAsync(ms, workbook.Worksheets[0]);
             return ms.ToArray();
         }
