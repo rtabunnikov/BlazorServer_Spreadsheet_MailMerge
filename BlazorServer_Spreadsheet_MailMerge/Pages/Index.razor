@@ -1,5 +1,6 @@
 ﻿@page "/"
 @inject DocumentService DocumentService
+@inject NavigationManager NavigationManager
 
 <div class="container">
     <DxFormLayout>
@@ -27,10 +28,7 @@
 
             <DxFormLayoutItem ColSpanMd="2">
                 <Template>
-                    <a class="btn btn-sm dx-btn btn-primary btn-block"
-                       href="api/Export/Xlsx?loanAmount=@loanAmount&periodInYears=@periodInYears&interestRate=@interestRate&startDateOfLoan=@startDateOfLoan">
-                        Export to XLSX
-                    </a>
+                    <DxButton Click="ExportToXlsx" CssClass="btn-block" Text="Export to XLSX" />
                 </Template>
             </DxFormLayoutItem>
 
@@ -47,10 +45,7 @@
             </DxFormLayoutItem>
             <DxFormLayoutItem ColSpanMd="2">
                 <Template>
-                    <a class="btn btn-sm dx-btn btn-primary btn-block"
-                       href="api/Export/Pdf?loanAmount=@loanAmount&periodInYears=@periodInYears&interestRate=@interestRate&startDateOfLoan=@startDateOfLoan">
-                        Export to PDF
-                    </a>
+                    <DxButton Click="ExportToPdf" CssClass="btn-block" Text="Export to PDF" />
                 </Template>
             </DxFormLayoutItem>
 
@@ -102,4 +97,14 @@
         var document = await DocumentService.GetHtmlDocumentAsync(loanAmount, periodInYears, interestRate, startDateOfLoan);
         content = "data:text/html;base64," + Convert.ToBase64String(document);
     }
+
+    void ExportToXlsx(MouseEventArgs args) =>
+        NavigationManager.NavigateTo(
+            $"api/Export/Xlsx?loanAmount={loanAmount}&periodInYears={periodInYears}&interestRate={interestRate}&startDateOfLoan={startDateOfLoan}",
+            true);
+
+    void ExportToPdf(MouseEventArgs args) =>
+        NavigationManager.NavigateTo(
+            $"api/Export/Pdf?loanAmount={loanAmount}&periodInYears={periodInYears}&interestRate={interestRate}&startDateOfLoan={startDateOfLoan}",
+            true);
 }
