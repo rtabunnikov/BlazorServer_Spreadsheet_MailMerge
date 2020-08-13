@@ -61,28 +61,28 @@
 </div>
 
 @code{
-        double loanAmount = 19000;
-        int periodInYears = 2;
-        double interestRate = 0.055d;
-        DateTime startDateOfLoan = DateTime.Now;
-        string content;
+    double loanAmount = 19000;
+    int periodInYears = 2;
+    double interestRate = 0.055d;
+    DateTime startDateOfLoan = DateTime.Now;
+    string content;
 
-        double LoanAmount {
-            get => loanAmount;
-            set { loanAmount = value; UpdateValue(); }
-        }
-        int PeriodInDays {
-            get => periodInYears;
-            set { periodInYears = value; UpdateValue(); }
-        }
-        double InterestRate {
-            get => interestRate;
-            set { interestRate = value; UpdateValue(); }
-        }
-        DateTime StartDateOfLoan {
-            get => startDateOfLoan;
-            set { startDateOfLoan = value; UpdateValue(); }
-        }
+    double LoanAmount {
+        get => loanAmount;
+        set { loanAmount = value; UpdateValue(); }
+    }
+    int PeriodInDays {
+        get => periodInYears;
+        set { periodInYears = value; UpdateValue(); }
+    }
+    double InterestRate {
+        get => interestRate;
+        set { interestRate = value; UpdateValue(); }
+    }
+    DateTime StartDateOfLoan {
+        get => startDateOfLoan;
+        set { startDateOfLoan = value; UpdateValue(); }
+    }
 
     protected override async Task OnInitializedAsync() {
         await UpdatePreview();
