@@ -1,6 +1,7 @@
 ﻿@page "/"
+@using System.Globalization
 @inject DocumentService DocumentService
-@inject NavigationManager NavigationManager
+@inject IJSRuntime JS
 
 <div class="container">
     <DxFormLayout>
@@ -104,13 +105,13 @@
         var queryParams = new Dictionary<string, string>() {
             { "loanAmount", loanAmount.ToString() },
             { "periodInYears", periodInYears.ToString() },
-            { "interestRate", interestRate.ToString() },
-            { "startDateOfLoan", startDateOfLoan.ToString() },
+            { "interestRate", interestRate.ToString(CultureInfo.InvariantCulture) },
+            { "startDateOfLoan", startDateOfLoan.ToString("O") },
         };
         return QueryHelpers.AddQueryString(uri, queryParams);
     }
 
-    void ExportToXlsx(MouseEventArgs args) => NavigationManager.NavigateTo(GetQueryString("api/Export/Xlsx"), true);
+    void ExportToXlsx(MouseEventArgs args) => JS.InvokeAsync<object>("open", GetQueryString("api/Export/Xlsx"), "_blank");
 
-    void ExportToPdf(MouseEventArgs args) => NavigationManager.NavigateTo(GetQueryString("api/Export/Pdf"), true);
+    void ExportToPdf(MouseEventArgs args) => JS.InvokeAsync<object>("open", GetQueryString("api/Export/Pdf"), "_blank");
 }
