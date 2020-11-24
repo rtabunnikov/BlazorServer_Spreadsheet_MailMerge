@@ -111,7 +111,7 @@
         return QueryHelpers.AddQueryString(uri, queryParams);
     }
 
-    void ExportToXlsx(MouseEventArgs args) => JS.InvokeAsync<object>("open", GetQueryString("api/Export/Xlsx"), "_blank");
+    void ExportToXlsx(MouseEventArgs args) => JS.InvokeAsync<object>("open", GetQueryString("api/Export/Xlsx"), "_self");
 
-    void ExportToPdf(MouseEventArgs args) => JS.InvokeAsync<object>("open", GetQueryString("api/Export/Pdf"), "_blank");
+    void ExportToPdf(MouseEventArgs args) => JS.InvokeAsync<object>("open", GetQueryString("api/Export/Pdf"), "_self");
 }
